@@ -5,23 +5,33 @@ export default class ListStudents extends Component {
     constructor(props){
         super(props);
     }
+    //Hàm xử lý sự kiện xem 
+    handleView = (student) =>{
+        this.props.onHandleView(true,"Close", student); 
+    }
+    //Hàm xử lý sự kiện cho chức năng xem
+    HandleView=(toggle, actionName, student)=>{
+        this.props.onHandleView(toggle, actionName, student);
+    }
   render() {
     // console.log(this.props.ListStudents);
     let renderStudents = this.props.ListStudents;
-    console.log(renderStudents);
-    let elementStudent = renderStudents.map((student,index)=>{
+    // console.log(renderStudents);
+    let elementStudent = renderStudents.map((renderStudent,index)=>{
         return (
-            <tr key={index}>
+            <tr key={index} onHandleView={this.HandleView}>
                 <td>{index+1}</td>
-                <td>{student.studentId}</td>
-                <td>{student.studentName}</td>
-                <td>{student.age}</td>
-                <td>{student.sex?'Nam':'Nữ'}</td>
-                <td>{student.birthDate}</td>
-                <td>{student.address}</td>
+                <td>{renderStudent.studentId}</td>
+                <td>{renderStudent.studentName}</td>
+                <td>{renderStudent.age}</td>
+                <td>{renderStudent.sex?'Nam':'Nữ'}</td>
+                <td>{renderStudent.birthDate}</td>
+                <td>{renderStudent.address}</td>
                 <td>
                     <div class="template-demo">
-                        <button type="button" className="btn btn-danger btn-icon-text">
+                        <button type="button" className="btn btn-danger btn-icon-text" 
+                            onClick={()=>this.handleView(this.renderStudent)}
+                        >
                             Xem
                         </button>
                         <button type="button" className="btn btn-warning btn-icon-text">
