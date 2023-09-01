@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
-import Title from './Component/Title'
-import Form from './Component/Form'
-import ListStudents from './Component/ListStudents'
-import Control from './Component/Control'
+import Title from './Components/Title'
+import Form from './Components/Form'
+import ListStudents from './Components/ListStudents'
+import Control from './Components/Control'
 
 export default class App extends Component {
     constructor(props){
@@ -38,20 +38,55 @@ export default class App extends Component {
         this.setState({
             isToggle: toggle,
             actionName:actionName,
-            student: student
+            student:student 
         })
     }
+
+    // Sự kiện xử lý xử lý dữ liệu khi Submit Form
+    handleSubmit = (toggle, student) =>{
+        console.log(toggle);
+        console.log(this.state.actionName);
+        console.log(student);
+        this.setState({
+            isToggle:toggle,
+        })
+        if(this.state.actionName === "Save"){
+            let {students} = this.state;
+            students.push(student);
+            this.setState({
+                students:students
+            })
+        }else if(this.state.actionName === "Update" ){
+            let {students} = this.state;
+            for (let i = 0; i < students.length; i++) {
+                if(students[i].studentId === student.studentId){
+                    students[i]=student;
+                    break;
+                }
+            }
+            this.setState({
+                students:students
+            })
+        }
+    }
+
+    // Hàm xử lý sự kiện xóa
+    handleDeleteStudent = (studentId) => {
+        const updateStudents = this.state.students.filter((student)=>student.studentId !== studentId);
+        this.setState({
+            students:updateStudents,
+        });
+    }
+
   render() {
     let {students} = this.state;
     //Render form theo giá trị của isToggle
-    let elementForm = this.state.isToggle===true? <Form renderActionName={this.state.actionName} renderStudent={this.state.student} /> : "";
-
+    let elementForm = this.state.isToggle===true? <Form renderActionName={this.state.actionName} renderStudent={this.state.student} onSubmit={this.handleSubmit} /> : "";
     const{searchQuery,searchResult}=this.state;
     let data=this.state.students;
     if(this.state.searchQuery !==""){
         data=data.filter(x=>x.studentName.toLowerCase().includes(this.state.searchQuery) || x.studentId.toLowerCase().includes(this.state.searchQuery) );
     }
-    // console.log(data);
     return (
       <div className="container-fluid">
         <Title />
@@ -63,13 +98,12 @@ export default class App extends Component {
                     <Control onSearch={this.handleSearch} onAddorEditView={this.handleAddOrEditView} />
                 </div>
                 <div className="card-body">
-                    <ListStudents ListStudents={data} onHandleView={this.handleAddOrEditView} />
+                    <ListStudents ListStudents={data} onHandleEditOrView={this.handleAddOrEditView} renderStudent={students} onDeleteStudent={this.handleDeleteStudent} />
                 </div>
             </div>
         </div>
 
         <div className="col-5 grid-margin">
-            {/* <Form /> */}
             {elementForm}
         </div>
     </div>
@@ -78,4 +112,3 @@ export default class App extends Component {
     )
   }
 }
-
