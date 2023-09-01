@@ -1,25 +1,38 @@
 import React, { Component } from 'react'
-// import Student from './Student'
 
 export default class ListStudents extends Component {
     constructor(props){
         super(props);
     }
-    //Hàm xử lý sự kiện xem 
-    handleView = (student) =>{
-        this.props.onHandleView(true,"Close", student); 
+    // //Hàm xử lý sự kiện xem 
+    // handleView = (student) =>{
+    //     this.props.onHandleView(true,"Close", student);
+    // }
+
+    // //Hàm xử lý sự kiện sửa 
+    // handleEdit = (student) =>{
+    //     this.props.onHandleEdit(true,"Update", student);
+    // }
+
+    handleEditOrView = (student, actionName) => {
+        this.props.onHandleEditOrView(true, actionName, student);
     }
+
     //Hàm xử lý sự kiện cho chức năng xem
-    HandleView=(toggle, actionName, student)=>{
-        this.props.onHandleView(toggle, actionName, student);
+    onHandleEditOrView=(toggle, actionName, student)=>{
+        this.props.onHandleEditOrView(toggle, actionName, student);
+    }
+
+    handleDelete=(studentId)=>{
+        if(window.confirm('Bạn có chắc chắn muốn xóa sinh viên này không ? ')){
+            this.props.onDeleteStudent(studentId);
+        }
     }
   render() {
-    // console.log(this.props.ListStudents);
     let renderStudents = this.props.ListStudents;
-    // console.log(renderStudents);
     let elementStudent = renderStudents.map((renderStudent,index)=>{
         return (
-            <tr key={index} onHandleView={this.HandleView}>
+            <tr key={index} onHandleEditOrView={this.HandleEditOrView}> 
                 <td>{index+1}</td>
                 <td>{renderStudent.studentId}</td>
                 <td>{renderStudent.studentName}</td>
@@ -28,16 +41,22 @@ export default class ListStudents extends Component {
                 <td>{renderStudent.birthDate}</td>
                 <td>{renderStudent.address}</td>
                 <td>
-                    <div class="template-demo">
+                    <div className="template-demo">
                         <button type="button" className="btn btn-danger btn-icon-text" 
-                            onClick={()=>this.handleView(this.renderStudent)}
+                            // onClick={()=>this.handleView(renderStudent)}
+                            onClick={()=>this.handleEditOrView(renderStudent,"Close")}
                         >
                             Xem
                         </button>
-                        <button type="button" className="btn btn-warning btn-icon-text">
+                        <button type="button" className="btn btn-warning btn-icon-text"
+                            // onClick={()=>this.handleEdit(renderStudent)}
+                            onClick={()=>this.handleEditOrView(renderStudent,"Update")}
+                        >
                             Sửa
                         </button>
-                        <button type="button" className="btn btn-success btn-icon-text">
+                        <button type="button" className="btn btn-success btn-icon-text"
+                            onClick={()=>this.handleDelete(renderStudent.studentId)}
+                        >
                             Xóa
                         </button>
                     </div>
